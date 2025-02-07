@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Asset</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: auto; }
+        h1 { text-align: center; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, button { width: 100%; padding: 10px; margin: 5px 0 15px; box-sizing: border-box; }
+        .result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add Asset</h1>
+        <form id="addAssetForm">
+            <label for="service_id">Service ID:</label>
+            <input type="text" id="service_id" required>
+
+            <label for="service_type">Service Type:</label>
+            <input type="text" id="service_type" required>
+
+            <label for="size">Size:</label>
+            <input type="text" id="size" required>
+
+            <label for="owner">Owner:</label>
+            <input type="text" id="owner" required>
+
+            <label for="appraisedValue">Appraised Value:</label>
+            <input type="text" id="appraisedValue" required>
+
+            <label for="description">Description:</label>
+            <input type="text" id="description">
+
+            <label for="location">Location:</label>
+            <input type="text" id="location">
+
+            <label for="timestamp">Timestamp:</label>
+            <input type="text" id="timestamp" required>
+
+            <button type="submit">Add Asset</button>
+        </form>
+
+        <div class="result">
+            <h3>Result:</h3>
+            <pre id="resultContent">No results yet.</pre>
+        </div>
+    </div>
+
+    <script>
+        const apiBaseUrl = 'http://localhost:3000';
+
+        document.getElementById('addAssetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                service_id: document.getElementById('service_id').value,
+                service_type: document.getElementById('service_type').value,
+                size: document.getElementById('size').value,
+                owner: document.getElementById('owner').value,
+                appraisedValue: document.getElementById('appraisedValue').value,
+                description: document.getElementById('description').value,
+                location: document.getElementById('location').value,
+                timestamp: document.getElementById('timestamp').value,
+            };
+
+            try {
+                const response = await fetch(`${apiBaseUrl}/assets`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+
+                const result = await response.json();
+                document.getElementById('resultContent').textContent = `Asset created successfully:\n${JSON.stringify(result, null, 2)}`;
+            } catch (error) {
+                document.getElementById('resultContent').textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>

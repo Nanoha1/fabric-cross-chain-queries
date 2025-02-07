@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Assets</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: auto; }
+        h1 { text-align: center; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, button { width: 100%; padding: 10px; margin: 5px 0 15px; box-sizing: border-box; }
+        .result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Search Assets</h1>
+        <form id="searchAssetForm">
+            <label for="service_id">Service ID:</label>
+            <input type="text" id="service_id">
+
+            <label for="service_type">Service Type:</label>
+            <input type="text" id="service_type">
+
+            <label for="size">Size:</label>
+            <input type="text" id="size">
+
+            <label for="owner">Owner:</label>
+            <input type="text" id="owner">
+
+            <label for="appraisedValue">Appraised Value:</label>
+            <input type="text" id="appraisedValue">
+
+            <label for="description">Description:</label>
+            <input type="text" id="description">
+
+            <label for="location">Location:</label>
+            <input type="text" id="location">
+
+            <label for="timestamp">Timestamp:</label>
+            <input type="text" id="timestamp">
+
+            <button type="submit">Search</button>
+        </form>
+
+        <div class="result">
+            <h3>Search Results:</h3>
+            <pre id="resultContent">No results yet.</pre>
+        </div>
+    </div>
+
+    <script>
+        const apiBaseUrl = 'http://localhost:3000';
+
+        document.getElementById('searchAssetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // 收集用户输入的查询参数
+            const params = new URLSearchParams();
+            const fields = [
+                'service_id', 'service_type', 'size', 'owner',
+                'appraisedValue', 'description', 'location', 'timestamp'
+            ];
+            fields.forEach(field => {
+                const value = document.getElementById(field).value.trim();
+                if (value) params.append(field, value);
+            });
+
+            try {
+                const response = await fetch(`${apiBaseUrl}/assets/search?${params.toString()}`);
+                const result = await response.json();
+                document.getElementById('resultContent').textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('resultContent').textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
